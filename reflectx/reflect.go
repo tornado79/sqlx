@@ -188,6 +188,11 @@ func (m *Mapper) TraversalsByNameFunc(t reflect.Type, names []string, fn func(in
 	tm := m.TypeMap(t)
 	for i, name := range names {
 		fi, ok := tm.Names[name]
+		// checks Names after replaced "_" . This allow the usage of this function on smallnest/gen types  
+		if !ok {
+			 normName := strings.Replace(name, "_", "", -1)
+			 fi, ok = tm.Names[normName]
+		}
 		if !ok {
 			if err := fn(i, nil); err != nil {
 				return err
